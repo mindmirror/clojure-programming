@@ -45,3 +45,50 @@
          (recur (assoc-in new-board [x y] new-liveness) x (inc y)))))))
 
 (-> (iterate indexed-step glider) (nth 8) pprint)
+
+(defn indexed-step2
+  [board]
+  (let [w (count board)
+        h (count (first board))]
+    (reduce
+     (fn [new-board x]
+       (reduce
+        (fn [new-board y]
+          (let [new-liveness
+                (case (count-neighbors board [x y])
+                  2 (get-in board [x y])
+                  3 :on
+                  nil)]
+            (assoc-in new-board [x y] new-liveness)))
+        new-board (range h)))
+     board (range w))))
+
+(-> (iterate indexed-step2 glider) (nth 8) (pprint))
+
+(defn indexed-step3
+  [board]
+  (reduce (fn [new-board [x y]]
+            (let [new-liveness
+                  (case (count-neighbors new-board [x y])
+                    2 (get-in board [x y])
+                    3 :on
+                    nil)]
+              (assoc-in new-board [x y] new-liveness)))
+          board
+          (for [x (range (count board)) y (range (count (first board)))] [x y])))
+
+(-> (iterate indexed-step3 glider) (nth 8) (pprint))
+
+
+;;---------------------------------------------------------------------
+;; Loop-less version
+;;---------------------------------------------------------------------
+
+(partition 3 1 (range 5))
+(partition 3 1 (concat [nil] (range 5) [nil]))
+
+(defn window
+  "Returns a lazy sequence of 3-item windows centered around each item of coll."
+  [coll]
+  (partition 3 1 (concat [nil] coll [nil])))
+
