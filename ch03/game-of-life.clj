@@ -142,4 +142,16 @@
 (= (nth (iterate indexed-step glider) 8)
    (nth (iterate index-free-step glider) 8))
 
+(def step1 (window2 (take 9 (repeat nil)) glider))
+(pprint step1)
+(def e1-step1 (nth step1 0))
+(def e2-step1 (nth step1 1))
+(def e3-step1 (nth step1 2))
+(def e4-step1 (nth step1 3))
+(def e5-step1 (nth step1 4))
+(def e6-step1 (nth step1 5))
+(pprint e1-step1)
+(pprint (cell-block2 e1-step1))
+(pprint (vec (map liveness (cell-block2 e1-step1))))
+(pprint (index-free-step glider))
 
