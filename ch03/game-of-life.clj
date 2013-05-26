@@ -92,3 +92,43 @@
   [coll]
   (partition 3 1 (concat [nil] coll [nil])))
 
+(defn cell-block
+  "Creates a sequence of 3x3 windows of a triple of 3 sequences."
+  [[left mid right]]
+  (window (map vector
+               (or left (repeat nil)) mid (or right (repeat nil)))))
+
+(defn window2
+  "Returns a lazy sequence of 3-item windows centered around each item of coll, padded as necessary with pad or nil."
+  ([coll] (window2 nil coll))
+  ([pad coll]
+   (partition 3 1 (concat [pad] coll [pad]))))
+
+(defn cell-block2
+  "Cerates a sequence of 3x3 windows from a triple of 3 sequences."
+  [[left mid right]]
+  (window2 (map vector left mid right)))
+
+(defn liveness
+  "Returns the lvieness (nil or :on) of the center cell for the next step."
+  [block]
+  (let [[_ [_ center _] _] block]
+    (case (- (count (filter #{:on} (apply concat block)))
+             (if (= :on center) 1 0))
+      2 center
+      3 :on
+      nil)))
+
+(defn- step-row
+  "Yields the next state of the center row."
+  [rows-triple]
+  (vec (map liveness (cell-block2 rows-triple))))
+
+(defn index-free-step
+  "Yies the next state of the board."
+  [board]
+  (vec (map step-row (window2 (repeat nil) board))))
+
+(index-free-step glider)
+
+(pprint (window2 (repeat nil) glider))
