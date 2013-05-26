@@ -131,4 +131,15 @@
 
 (index-free-step glider)
 
-(pprint (window2 (repeat nil) glider))
+(pprint glider)
+(def s1 (window2 (take 11 (repeat nil)) glider))
+(pprint s1)
+(def s2 (first s1))
+(pprint s2)
+(pprint (cell-block2 s2))
+(pprint (map cell-block2 s1))
+
+(= (nth (iterate indexed-step glider) 8)
+   (nth (iterate index-free-step glider) 8))
+
+
